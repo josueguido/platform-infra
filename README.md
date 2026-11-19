@@ -75,3 +75,74 @@ terraform -chdir=environments/dev plan
 
 Review the plan before applying changes. Configure state and credentials
 according to the team's policies before provisioning infrastructure.
+
+## Commit messages
+
+Use [Conventional Commits](https://www.conventionalcommits.org/) so commit
+history is consistent and easy to scan. Use this format:
+
+```text
+<type>(<scope>): <short description>
+```
+
+The scope is optional. Use an imperative, concise description. Common types:
+
+| Type | Use |
+| --- | --- |
+| `feat` | Add a capability or infrastructure component |
+| `fix` | Correct a defect or unintended behavior |
+| `docs` | Change documentation |
+| `refactor` | Restructure code without changing behavior |
+| `test` | Add or update tests |
+| `ci` | Change CI/CD configuration |
+| `chore` | Make maintenance changes |
+
+Examples:
+
+```text
+feat(networking): add private subnets
+fix(eks): correct node group capacity settings
+docs: describe the branch workflow
+```
+
+For an incompatible change, add `!` after the type or scope and describe the
+breaking change in the commit body or footer:
+
+```text
+feat(eks)!: replace the legacy cluster input
+```
+
+## Branch workflow
+
+Keep `main` as the stable integration branch. Use short-lived branches for
+changes; do not create permanent branches for `dev`, `staging`, or
+`production`. Those environments are represented by directories under
+`environments/`.
+
+Use a type-prefixed branch name in lowercase kebab-case:
+
+```text
+feat/add-eks-module
+fix/private-subnet-routes
+docs/branch-workflow
+chore/update-terraform-version
+```
+
+Typical workflow:
+
+1. Update your local `main` branch and create a branch for one focused change.
+2. Make and validate the change; use Conventional Commit messages.
+3. Push the branch and open a pull request targeting `main`.
+4. Review the Terraform plan and obtain the required approvals before merging,
+   especially for changes that affect production.
+5. Merge the pull request and delete the short-lived branch.
+
+Example:
+
+```sh
+git switch main
+git pull
+git switch -c feat/add-eks-module
+# Make changes and commit them
+git push -u origin feat/add-eks-module
+```
